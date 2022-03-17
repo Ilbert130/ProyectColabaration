@@ -1,4 +1,7 @@
-﻿namespace ProyectPractices
+﻿using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
+
+namespace ProyectPractices
 {
     public class Startup
     {
@@ -11,7 +14,10 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
+            //Esta es la configuracion del dbcontex
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
