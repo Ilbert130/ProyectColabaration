@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     "net6.0": {
-      "AutoMapper/11.0.0": {
+      "AutoMapper/11.0.1": {
         "type": "package",
         "dependencies": {
           "Microsoft.CSharp": "4.7.0"
@@ -981,15 +981,15 @@
     }
   },
   "libraries": {
-    "AutoMapper/11.0.0": {
-      "sha512": "+596AnKykYCk9RxXCEF4GYuapSebQtFVvIA1oVG1rrRkCLAC7AkWehJ0brCfYUbdDW3v1H/p0W3hob7JoXGjMw==",
+    "AutoMapper/11.0.1": {
+      "sha512": "WIadGC1pIwbnyTubvI577p3F++Bsj9q2Q3OaAc1I0QS+JhupN1xkdrPBhI9bPIeg63zM81tZplUNYkqU1HE5jQ==",
       "type": "package",
-      "path": "automapper/11.0.0",
+      "path": "automapper/11.0.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "README.md",
-        "automapper.11.0.0.nupkg.sha512",
+        "automapper.11.0.1.nupkg.sha512",
         "automapper.nuspec",
         "icon.png",
         "lib/netstandard2.1/AutoMapper.dll",
@@ -3319,6 +3319,7 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
+      "AutoMapper >= 11.0.1",
       "AutoMapper.Extensions.Microsoft.DependencyInjection >= 11.0.0",
       "Microsoft.EntityFrameworkCore.SqlServer >= 7.0.0-preview.2.22153.1",
       "Microsoft.EntityFrameworkCore.Tools >= 7.0.0-preview.2.22153.1",
@@ -3327,27 +3328,28 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Ilbert Castillo\\.nuget\\packages\\": {},
+    "C:\\Users\\Administrador\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Ilbert Castillo\\Documents\\ProyectosVS\\ProyectPractices\\ProyectPractices\\ProyectPractices.csproj",
+      "projectUniqueName": "C:\\Users\\Administrador\\OneDrive\\Escritorio\\ProyectColabaration\\ProyectColabaration\\ProyectPractices\\ProyectPractices.csproj",
       "projectName": "ProyectPractices",
-      "projectPath": "C:\\Users\\Ilbert Castillo\\Documents\\ProyectosVS\\ProyectPractices\\ProyectPractices\\ProyectPractices.csproj",
-      "packagesPath": "C:\\Users\\Ilbert Castillo\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Ilbert Castillo\\Documents\\ProyectosVS\\ProyectPractices\\ProyectPractices\\obj\\",
+      "projectPath": "C:\\Users\\Administrador\\OneDrive\\Escritorio\\ProyectColabaration\\ProyectColabaration\\ProyectPractices\\ProyectPractices.csproj",
+      "packagesPath": "C:\\Users\\Administrador\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Administrador\\OneDrive\\Escritorio\\ProyectColabaration\\ProyectColabaration\\ProyectPractices\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
       ],
       "configFilePaths": [
-        "C:\\Users\\Ilbert Castillo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Administrador\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net6.0"
@@ -3372,6 +3374,10 @@
       "net6.0": {
         "targetAlias": "net6.0",
         "dependencies": {
+          "AutoMapper": {
+            "target": "Package",
+            "version": "[11.0.1, )"
+          },
           "AutoMapper.Extensions.Microsoft.DependencyInjection": {
             "target": "Package",
             "version": "[11.0.0, )"
@@ -3413,7 +3419,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.101\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
       }
     }
   }
