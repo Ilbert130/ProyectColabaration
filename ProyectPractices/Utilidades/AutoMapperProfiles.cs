@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using ProyectPractices.DTOs;
+using ProyectPractices.Models;
 
 namespace ProyectPractices.Utilidades
 {
@@ -6,7 +8,9 @@ namespace ProyectPractices.Utilidades
     {
         public AutoMapperProfiles()
         {
-
+            CreateMap<Maestro, MaestroGetDTO>();
+            CreateMap<MaestroPostDTO, Maestro>();
+            CreateMap<MaestroPutDTO, Maestro>();
         }
     }
 }
