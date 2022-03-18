@@ -16,10 +16,10 @@ namespace ProyectPractices
             modelBuilder.Entity<MateriaAlumno>().HasKey(x => new { x.MateriaId, x.AlumnoId });
         }
 
-        DbSet<Alumno> Alumnos { get; set; }
-        DbSet<Maestro> Maestro { get; set; }
-        DbSet<Grupo> Grupos { get; set; }
-        DbSet<Materia> Materias { get; set; }
-        DbSet<MateriaAlumno> MateriaAlumnos { get; set; }
+        public DbSet<Alumno> Alumnos { get; set; }
+        public DbSet<Maestro> Maestro { get; set; }
+        public DbSet<Grupo> Grupos { get; set; }
+        public DbSet<Materia> Materias { get; set; }
+        public DbSet<MateriaAlumno> MateriaAlumnos { get; set; }
     }
 }
