@@ -19,6 +19,8 @@ namespace ProyectPractices
             //Esta es la configuracion del dbcontex
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+            services.AddAutoMapper(typeof(Startup));
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
         }

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ProyectPractices.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/maestro")]
     [ApiController]
     public class MaestroController : ControllerBase
     {
@@ -80,9 +80,6 @@ namespace ProyectPractices.Controllers
             return Ok();
         }
 
-
-    }
-
-    
+    }  
 
 }
