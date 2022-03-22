@@ -11,6 +11,12 @@ namespace ProyectPractices.Utilidades
             CreateMap<Maestro, MaestroGetDTO>();
             CreateMap<MaestroPostDTO, Maestro>();
             CreateMap<MaestroPutDTO, Maestro>();
+            CreateMap<Grupo, GrupoGetDTO>();
+            CreateMap<GrupoPostDTO, Grupo>();
+            CreateMap<GrupoPutDTO, Grupo>(); 
+            CreateMap<Materia, MateriaGetDTO>();
+            CreateMap<MateriaPostDTO, Materia>();
+            CreateMap<MateriaPutDTO, Materia>();
         }
     }
 }

@@ -7,7 +7,7 @@ using ProyectPractices.Models;
 namespace ProyectPractices.Controllers
 {
     [ApiController]
-    [Route("api/maestro/{id:int}/grupo")]
+    [Route("api/grupo")]
     public class GrupoController:ControllerBase
     {
         private readonly ApplicationDbContext context;
@@ -19,7 +19,7 @@ namespace ProyectPractices.Controllers
             this.mapper = mapper;
         }
 
-        [HttpGet("{idGrupo:int}",Name = "ObtenerGrupo")]
+        [HttpGet("{id:int}",Name = "ObtenerGrupo")]
         public async Task<ActionResult<GrupoGetDTO>> Get(int id)
         {
             var exist = await context.Grupos.AnyAsync(g => g.Id == id);
@@ -33,26 +33,14 @@ namespace ProyectPractices.Controllers
             return mapper.Map<GrupoGetDTO>(grupo);
         }
 
-        [HttpGet("{idGroup:int}")]
-        public async Task<ActionResult<GrupoGETMaDTO>> GetForMaestro(int id)
-        {
-            var exist = await context.Grupos.AnyAsync(g => g.Id == id);
-
-            if (!exist)
-            {
-                return BadRequest("El grupo ingresado no existe. Por favor ingreselo.");
-            }
-
-            var grupo = await context.Grupos.Include(g => g.Maestro).FirstOrDefaultAsync(g => g.Id == id);
-            return mapper.Map<GrupoGETMaDTO>(grupo);
-        }
-
         [HttpPost]
         public async Task<ActionResult> Post(GrupoPostDTO grupoPostDTO, int id)
         {
-            var cliente = await context.Grupos.AnyAsync(g => g.Id == grupoPostDTO.Id);
+            var exist = await context.Grupos.AnyAsync(g => g.Nombre == grupoPostDTO.Nombre);
 
-            if (cliente)
+            var maestro = await context.Maestro.AnyAsync(m => m.Id == id);
+
+            if (exist)
             {
                 return BadRequest($"El grupo {grupoPostDTO.Nombre}");
             }
@@ -62,7 +50,45 @@ namespace ProyectPractices.Controllers
             context.Grupos.Add(grupo);
             await context.SaveChangesAsync();
 
+            return Ok();
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> Put(GrupoPutDTO grupoPutDTO)
+        {
+            var existg = await context.Grupos.AnyAsync(g => g.Id == grupoPutDTO.Id);
+
+            var existm = await context.Maestro.AnyAsync(m => m.Id == grupoPutDTO.MaestroId);
+
+            if (!existg)
+            {
+                return NotFound("El grupo a actualizar no existe");
+            }
+
+            if (!existm)
+            {
+                return NotFound("El Maestro ingresado no existe");
+            }
+
+            var grupo = mapper.Map<Grupo>(grupoPutDTO);
+            context.Grupos.Update(grupo);
+            await context.SaveChangesAsync();
             return CreatedAtRoute("ObtenerGrupo", grupo.Id);
+        }
+
+        [HttpDelete("idd:int")]
+        public async Task<ActionResult> Delete(int idd)
+        {
+            var exist = await context.Grupos.AnyAsync(g => g.Id == idd);
+
+            if (!exist)
+            {
+                return NotFound("El grupo a eliminar no existe");
+            }
+
+            context.Grupos.Remove(new Grupo { Id = idd });
+            await context.SaveChangesAsync();
+            return Ok();
         }
     }
 }

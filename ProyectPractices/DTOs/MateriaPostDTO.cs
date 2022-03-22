@@ -2,9 +2,9 @@
 
 namespace ProyectPractices.DTOs
 {
-    public class GrupoPostDTO
+    public class MateriaPostDTO
     {
-        [StringLength(maximumLength: 5)]
+        [StringLength(maximumLength: 15)]
         public string Nombre { get; set; }
     }
 }
