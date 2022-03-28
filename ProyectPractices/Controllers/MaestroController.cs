@@ -4,6 +4,8 @@ using AutoMapper;
 using ProyectPractices.Models;
 using ProyectPractices.DTOs;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace ProyectPractices.Controllers
 {
@@ -22,6 +24,8 @@ namespace ProyectPractices.Controllers
         }
 
         [HttpGet("{id:int}")]
+        //Con este atributo restringimos el acceso de este endpoint.
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<MaestroGetDTO>> Get(int id)
         {
             var existe = await context.Maestro.AnyAsync(m => m.Id == id);

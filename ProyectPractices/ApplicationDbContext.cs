@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ProyectPractices.Models;
 
 namespace ProyectPractices
 {
-    public class ApplicationDbContext:DbContext
+    public class ApplicationDbContext:IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
@@ -12,6 +13,7 @@ namespace ProyectPractices
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //Es importante hacer referencia al valor base de este metodo si se sobreescribe.
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<MateriaAlumno>().HasKey(x => new { x.MateriaId, x.AlumnoId });
         }
