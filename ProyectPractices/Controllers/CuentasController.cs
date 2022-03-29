@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using ProyectPractices.DTOs;
@@ -55,6 +57,21 @@ namespace ProyectPractices.Controllers
             {
                 return BadRequest("Login incorrecto");
             }
+        }
+
+        //Con este endpoint estamos creando un nuevo token para luego que expire 
+        [HttpGet("renovartoken")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public ActionResult<RespuestaAutenticacion> Renovar()
+        {
+            var emailClaim = HttpContext.User.Claims.Where(claim => claim.Type == "email").FirstOrDefault();
+            var email = emailClaim.Value;
+            var credencialesUsuario = new CredencialesUsuario()
+            {
+                Email = email
+            };
+
+            return ConstruirToken(credencialesUsuario);
         }
 
         //Construccion del token

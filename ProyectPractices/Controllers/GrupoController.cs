@@ -1,13 +1,18 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectPractices.DTOs;
 using ProyectPractices.Models;
+using System.Net;
 
 namespace ProyectPractices.Controllers
 {
     [ApiController]
     [Route("api/grupo")]
+    //Con este atributo restringimos el acceso de este endpoint.
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class GrupoController:ControllerBase
     {
         private readonly ApplicationDbContext context;
@@ -20,6 +25,7 @@ namespace ProyectPractices.Controllers
         }
 
         [HttpGet("{id:int}",Name = "ObtenerGrupo")]
+        [AllowAnonymous]
         public async Task<ActionResult<GrupoGetDTO>> Get(int id)
         {
             var exist = await context.Grupos.AnyAsync(g => g.Id == id);

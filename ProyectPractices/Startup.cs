@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -44,7 +45,41 @@ namespace ProyectPractices
                 .AddDefaultTokenProviders();
 
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
+
+            //Esta es la configuracion de swagger para poder utilizar la autenticacion
+            services.AddSwaggerGen(c =>
+            {
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[]{}
+                    }
+                });
+            });
+
+            //Aqui definimos los permisos de autorizaciones basados en claims
+            services.AddAuthorization(opciones =>
+            {
+                //Aqui definimos que permiso sera.
+                opciones.AddPolicy("EsAdmin", politica => politica.RequireClaim("esAdmin"));
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
