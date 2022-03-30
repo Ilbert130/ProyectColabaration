@@ -80,6 +80,20 @@ namespace ProyectPractices
                 //Aqui definimos que permiso sera.
                 opciones.AddPolicy("EsAdmin", politica => politica.RequireClaim("esAdmin"));
             });
+
+            //Vamos a configurar los Cors para permitir peticiones desde otro dominio
+            services.AddCors(opciones =>
+            {
+                opciones.AddDefaultPolicy(builder =>
+                {
+                    //Aqui indicamo el dominio de donde podran consultar los endpoint de esta API.
+                    //Tambien indicamos que queremos que tenga acceso a los metodos y cabezera.
+                    builder.WithOrigins("https://www.apirequest.io/").AllowAnyMethod().AllowAnyHeader();
+                });
+            });
+
+            //Esta instancia nos da acceso a los servicios de proteccion de datos
+            services.AddDataProtection();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -93,6 +107,10 @@ namespace ProyectPractices
 
             app.UseHttpsRedirection();
             app.UseRouting();
+
+            //Agregamos el meddleware de cors
+            app.UseCors();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

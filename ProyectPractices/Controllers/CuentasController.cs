@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -17,15 +18,53 @@ namespace ProyectPractices.Controllers
         private readonly UserManager<IdentityUser> userManager;
         private readonly IConfiguration configuration;
         private readonly SignInManager<IdentityUser> signInManager;
+        private readonly IDataProtector dataProtector;
 
         public CuentasController(UserManager<IdentityUser> userManager, IConfiguration configuration,
-            SignInManager<IdentityUser> signInManager)
+            SignInManager<IdentityUser> signInManager, IDataProtectionProvider dataProtectionProvider)
         {
             this.userManager = userManager;
             this.configuration = configuration;
             this.signInManager = signInManager;
+            //Creacion de proposito
+            dataProtector = dataProtectionProvider.CreateProtector("valor_unico_y_quizas_secreto");
+        }
+        
+        //EndPoint para encriptar string
+        [HttpGet("encriptar")]
+        public ActionResult Encriptar()
+        {
+            var textoPlano = "Ilbert Castillo";
+            var textoCifrado = dataProtector.Protect(textoPlano);
+            var textoDesencriptado = dataProtector.Unprotect(textoCifrado);
+
+            return Ok(new
+            {
+                textoPlano = textoPlano,
+                textoCifrado = textoCifrado,
+                textoDesencriptado = textoDesencriptado
+            });
         }
 
+        //EndPoint para encriptar string
+        [HttpGet("encriptarportiempo")]
+        public ActionResult EncriptarPorTiempo()
+        {
+            //Esto dara erro porque el tiempo del cifrado abra expirado y queera desencriptar y no se podra
+            var protectorLimitadoPorTiempo = dataProtector.ToTimeLimitedDataProtector();
+
+            var textoPlano = "Ilbert Castillo";
+            var textoCifrado = protectorLimitadoPorTiempo.Protect(textoPlano, lifetime: TimeSpan.FromSeconds(5));
+            Thread.Sleep(6000);
+            var textoDesencriptado = dataProtector.Unprotect(textoCifrado);
+
+            return Ok(new
+            {
+                textoPlano = textoPlano,
+                textoCifrado = textoCifrado,
+                textoDesencriptado = textoDesencriptado
+            });
+        }
 
         [HttpPost("registrar")]
         public async Task<ActionResult<RespuestaAutenticacion>> Registrar(CredencialesUsuario credencialesUsuario)
@@ -35,7 +74,7 @@ namespace ProyectPractices.Controllers
 
             if (resultado.Succeeded)
             {
-                return ConstruirToken(credencialesUsuario);
+                return await ConstruirToken(credencialesUsuario);
             }
             else
             {
@@ -51,7 +90,7 @@ namespace ProyectPractices.Controllers
 
             if (resultado.Succeeded)
             {
-                return ConstruirToken(credencialesUsuario);
+                return await ConstruirToken(credencialesUsuario);
             }
             else
             {
@@ -62,7 +101,7 @@ namespace ProyectPractices.Controllers
         //Con este endpoint estamos creando un nuevo token para luego que expire 
         [HttpGet("renovartoken")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public ActionResult<RespuestaAutenticacion> Renovar()
+        public async Task<ActionResult<RespuestaAutenticacion>> Renovar()
         {
             var emailClaim = HttpContext.User.Claims.Where(claim => claim.Type == "email").FirstOrDefault();
             var email = emailClaim.Value;
@@ -71,17 +110,21 @@ namespace ProyectPractices.Controllers
                 Email = email
             };
 
-            return ConstruirToken(credencialesUsuario);
+            return await ConstruirToken(credencialesUsuario);
         }
 
         //Construccion del token
-        private RespuestaAutenticacion ConstruirToken(CredencialesUsuario credencialesUsuario)
+        private async Task<RespuestaAutenticacion> ConstruirToken(CredencialesUsuario credencialesUsuario)
         {
             var claims = new List<Claim>()
             {
                 new Claim("email", credencialesUsuario.Email),
                 new Claim("lo que yo quiera", "cualquier otro valor")
             };
+
+            var usuario = await userManager.FindByEmailAsync(credencialesUsuario.Email);
+            var claimsDB = await userManager.GetClaimsAsync(usuario);
+            claims.AddRange(claimsDB);
 
             var llave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["llavejwt"]));
             var creds = new SigningCredentials(llave, SecurityAlgorithms.HmacSha256);
@@ -96,6 +139,24 @@ namespace ProyectPractices.Controllers
                 Token = new JwtSecurityTokenHandler().WriteToken(securityToken),
                 Expiracion = expiracion
             };
+        }
+
+        //Hacer admin endPoint para hacer usuarios admin
+        [HttpPost("haceradmin")]
+        public async Task<ActionResult> HacerAdmin(EditarAdminDTO editarAdminDTO)
+        {
+            var usuario = await userManager.FindByEmailAsync(editarAdminDTO.Email);
+            await userManager.AddClaimAsync(usuario, new Claim("esAdmin", "1"));
+            return NoContent();
+        }
+
+        //Con este endpoind removemos a un usuario de ser admin
+        [HttpPost("removeradmin")]
+        public async Task<ActionResult> RemoverAdmin(EditarAdminDTO editarAdminDTO)
+        {
+            var usuario = await userManager.FindByEmailAsync(editarAdminDTO.Email);
+            await userManager.RemoveClaimAsync(usuario, new Claim("esAdmin", "1"));
+            return NoContent();
         }
     }
 }
