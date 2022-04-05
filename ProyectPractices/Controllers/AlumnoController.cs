@@ -20,7 +20,7 @@ namespace ProyectPractices.Controllers
         }
 
         //Obteniendo alumno con su grupo y profesor
-        [HttpGet("idA:int")]
+        [HttpGet("idA:int",Name ="ObtenerAlumno")]
         public async Task<ActionResult<AlumnoGetDTO>> Get(int idA)
         {
             var exist = await context.Alumnos.AnyAsync(a => a.Id == idA);
@@ -35,7 +35,7 @@ namespace ProyectPractices.Controllers
         }
 
         //Insertando un nuevo alumno con sus materias inscritas
-        [HttpPost]
+        [HttpPost(Name = "AgregarAlumno")]
         public async Task<ActionResult> Post(AlumnoPostDTO alumnoPostDTO, int id)
         {
             var existA = await context.Alumnos.AnyAsync(a => a.Nombre == alumnoPostDTO.Nombre &&
@@ -55,7 +55,7 @@ namespace ProyectPractices.Controllers
         }
 
         //Actualizar alumno con sus materias
-        [HttpPut("idA:int")]
+        [HttpPut("idA:int", Name = "ActualizarAlumno")]
         public async Task<ActionResult> Put(int idA, AlumnoPostDTO alumnoPostDTO)
         {
             var alumno = await context.Alumnos.Include(a => a.MateriaAlumnos).FirstOrDefaultAsync(a => a.Id == idA);
@@ -71,7 +71,7 @@ namespace ProyectPractices.Controllers
         }
 
         //Eliminar Alumno
-        [HttpDelete("idA:int")]
+        [HttpDelete("idA:int", Name = "EliminarAlumno")]
         public async Task<ActionResult> Delete(int idA)
         {
             var alumno = await context.Alumnos.Include(a => a.MateriaAlumnos).AnyAsync(a => a.Id == idA);

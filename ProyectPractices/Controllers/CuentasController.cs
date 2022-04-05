@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using ProyectPractices.DTOs;
+using ProyectPractices.Service;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -13,21 +14,36 @@ namespace ProyectPractices.Controllers
 {
     [ApiController]
     [Route("api/cuentas")]
-    public class CuentasController:ControllerBase
+    public class CuentasController : ControllerBase
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly IConfiguration configuration;
         private readonly SignInManager<IdentityUser> signInManager;
+        private readonly HashService hashService;
         private readonly IDataProtector dataProtector;
 
         public CuentasController(UserManager<IdentityUser> userManager, IConfiguration configuration,
-            SignInManager<IdentityUser> signInManager, IDataProtectionProvider dataProtectionProvider)
+            SignInManager<IdentityUser> signInManager, IDataProtectionProvider dataProtectionProvider, HashService hashService)
         {
             this.userManager = userManager;
             this.configuration = configuration;
             this.signInManager = signInManager;
+            this.hashService = hashService;
             //Creacion de proposito
             dataProtector = dataProtectionProvider.CreateProtector("valor_unico_y_quizas_secreto");
+        }
+
+        [HttpGet("hash/{textoPlano}")]
+        public ActionResult ResultadoHash(string textoPlano)
+        {
+            var resultado1 = hashService.Hash(textoPlano);
+            var resultado2 = hashService.Hash(textoPlano);
+            return Ok(new
+            {
+                textoPlano = textoPlano,
+                Hash1 = resultado1,
+                Hash2 = resultado2
+            });
         }
         
         //EndPoint para encriptar string
@@ -66,7 +82,7 @@ namespace ProyectPractices.Controllers
             });
         }
 
-        [HttpPost("registrar")]
+        [HttpPost("registrar",Name ="RegistrarUsuario")]
         public async Task<ActionResult<RespuestaAutenticacion>> Registrar(CredencialesUsuario credencialesUsuario)
         {
             var usuario = new IdentityUser { UserName = credencialesUsuario.Email, Email = credencialesUsuario.Email };
@@ -82,7 +98,7 @@ namespace ProyectPractices.Controllers
             }
         }
 
-        [HttpPost("logear")]
+        [HttpPost("logear",Name = "LogearUsuario")]
         public async Task<ActionResult<RespuestaAutenticacion>> Login(CredencialesUsuario credencialesUsuario)
         {
             var resultado = await signInManager.PasswordSignInAsync(credencialesUsuario.Email,
@@ -99,7 +115,7 @@ namespace ProyectPractices.Controllers
         }
 
         //Con este endpoint estamos creando un nuevo token para luego que expire 
-        [HttpGet("renovartoken")]
+        [HttpGet("renovartoken",Name ="RenovarToken")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<RespuestaAutenticacion>> Renovar()
         {
@@ -142,7 +158,7 @@ namespace ProyectPractices.Controllers
         }
 
         //Hacer admin endPoint para hacer usuarios admin
-        [HttpPost("haceradmin")]
+        [HttpPost("haceradmin",Name ="HacerAdmin")]
         public async Task<ActionResult> HacerAdmin(EditarAdminDTO editarAdminDTO)
         {
             var usuario = await userManager.FindByEmailAsync(editarAdminDTO.Email);
@@ -151,7 +167,7 @@ namespace ProyectPractices.Controllers
         }
 
         //Con este endpoind removemos a un usuario de ser admin
-        [HttpPost("removeradmin")]
+        [HttpPost("removeradmin",Name ="RemoverAdmin")]
         public async Task<ActionResult> RemoverAdmin(EditarAdminDTO editarAdminDTO)
         {
             var usuario = await userManager.FindByEmailAsync(editarAdminDTO.Email);

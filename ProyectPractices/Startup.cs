@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using ProyectPractices.Service;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -23,7 +24,6 @@ namespace ProyectPractices
 
             //Esta es la configuracion del dbcontex
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
             //Servicio para configuriar la autenticacion y permisos
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -38,8 +38,10 @@ namespace ProyectPractices
                     ClockSkew = TimeSpan.Zero
                 });
 
-            //Configuracion de los servicios de Identity.
+            //Configurando el autoMapper
             services.AddAutoMapper(typeof(Startup));
+
+            //Configuracion de los servicios de Identity.
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
@@ -94,6 +96,7 @@ namespace ProyectPractices
 
             //Esta instancia nos da acceso a los servicios de proteccion de datos
             services.AddDataProtection();
+            services.AddTransient<HashService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

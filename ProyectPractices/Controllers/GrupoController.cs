@@ -12,7 +12,7 @@ namespace ProyectPractices.Controllers
     [ApiController]
     [Route("api/grupo")]
     //Con este atributo restringimos el acceso de este endpoint.
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class GrupoController:ControllerBase
     {
         private readonly ApplicationDbContext context;
@@ -25,7 +25,7 @@ namespace ProyectPractices.Controllers
         }
 
         [HttpGet("{id:int}",Name = "ObtenerGrupo")]
-        [AllowAnonymous]
+        //AllowAnonymous]
         public async Task<ActionResult<GrupoGetDTO>> Get(int id)
         {
             var exist = await context.Grupos.AnyAsync(g => g.Id == id);
@@ -39,7 +39,7 @@ namespace ProyectPractices.Controllers
             return mapper.Map<GrupoGetDTO>(grupo);
         }
 
-        [HttpPost]
+        [HttpPost(Name = "AgregarGrupo")]
         public async Task<ActionResult> Post(GrupoPostDTO grupoPostDTO, int id)
         {
             var exist = await context.Grupos.AnyAsync(g => g.Nombre == grupoPostDTO.Nombre);
@@ -59,7 +59,7 @@ namespace ProyectPractices.Controllers
             return Ok();
         }
 
-        [HttpPut]
+        [HttpPut(Name = "ActualizarGrupo")]
         public async Task<ActionResult> Put(GrupoPutDTO grupoPutDTO)
         {
             var existg = await context.Grupos.AnyAsync(g => g.Id == grupoPutDTO.Id);
@@ -82,7 +82,7 @@ namespace ProyectPractices.Controllers
             return CreatedAtRoute("ObtenerGrupo", grupo.Id);
         }
 
-        [HttpDelete("idd:int")]
+        [HttpDelete("idd:int", Name = "DeleteGrupo")]
         public async Task<ActionResult> Delete(int idd)
         {
             var exist = await context.Grupos.AnyAsync(g => g.Id == idd);
